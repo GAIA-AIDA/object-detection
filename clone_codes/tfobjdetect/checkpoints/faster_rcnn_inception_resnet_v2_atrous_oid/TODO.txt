@@ -1,0 +1,1 @@
+frozen_inference_graph.pb needs to be in this directory.
