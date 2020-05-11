@@ -124,7 +124,11 @@ def load_image_into_numpy_array(image):
 # In[10]:
 
 data_path = os.environ['CORPUS'] + '/data/video_shot_boundaries/representative_frames/'
-test_img_path = [data_path + item for item in os.listdir(data_path) if '.png' in item]
+test_img_path = []
+for item in os.listdir(data_path):
+    for subitem in os.listdir(data_path + item):
+        if '.png' in subitem:
+            test_img_path.append(data_path + item + '/' + subitem)
 
 # In[11]:
 

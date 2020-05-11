@@ -33,7 +33,6 @@ easydict==1.9
 entrypoints==0.2.3
 enum34==1.1.6
 feedparser==5.2.1
-flair==0.4.4
 future==0.17.1
 gast==0.2.2
 gensim==3.8.0
@@ -43,7 +42,6 @@ google-pasta==0.1.7
 grpcio==1.25.0
 h5py==2.8.0
 hdf5storage==0.1.15
-hickle==3.3.2
 html5lib==0.9999999
 hyperopt==0.1.2
 idna==2.6
@@ -76,7 +74,6 @@ langdetect==1.0.7
 lmdb==0.94
 lxml==4.2.1
 Markdown==2.6.11
-MarkupSafe==1.0
 matplotlib==3.1.2
 mistune==0.8.3
 more-itertools==7.1.0
@@ -147,7 +144,7 @@ SudachiPy==0.4.1
 tabulate==0.8.3
 tempora==1.14.1
 tensorboard==1.12.2
-tensorflow==1.12.0
+tensorflow-gpu==1.12.0
 tensorflow-estimator==2.0.1
 tensorflow-tensorboard==0.4.0
 termcolor==1.1.0

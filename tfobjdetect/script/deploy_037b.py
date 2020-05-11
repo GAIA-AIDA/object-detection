@@ -125,7 +125,7 @@ def load_image_into_numpy_array(image):
 # In[10]:
 
 ### 
-data_path = os.environ['CORPUS'] + '/data/jpg/'
+data_path = os.environ['CORPUS'] + '/data/jpg/jpg/'
 test_img_path = [data_path + item for item in os.listdir(data_path) if '.jpg' in item]
 
 

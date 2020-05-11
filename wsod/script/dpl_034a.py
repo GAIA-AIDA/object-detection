@@ -81,7 +81,7 @@ for i, l in enumerate(all_labels):
 
 # In[7]:
 
-data_path = os.environ['CORPUS'] + '/data/jpg/'
+data_path = os.environ['CORPUS'] + '/data/jpg/jpg/'
 test_img_path = [data_path + item for item in os.listdir(data_path) if '.jpg' in item]
 
 # In[9]:

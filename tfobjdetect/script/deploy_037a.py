@@ -129,7 +129,7 @@ def load_image_into_numpy_array(image):
 
 ### volumes must be mounted during docker 'run'
 ### or here we have a small sample in test dir
-data_path = os.environ['CORPUS'] + '/data/jpg/'
+data_path = os.environ['CORPUS'] + '/data/jpg/jpg/'
 test_img_path = [data_path + item for item in os.listdir(data_path) if '.jpg' in item]
 
 
