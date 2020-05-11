@@ -94,7 +94,7 @@ resnet.fc = nn.Linear(2048, len(all_labels)-1)
 resnet.avgpool = nn.AdaptiveAvgPool2d((1, 1))
 
 #saved_state_dict = torch.load(os.path.join('data/snapshots/','d2_rel_open_1600.pth'))
-saved_state_dict = torch.load(os.path.join('../snapshots', 'train_022', 'ckpt_5000'), map_location=torch.device('cuda'))
+saved_state_dict = torch.load(os.path.join(os.environ['MODELS'], 'ckpt_5000'), map_location=torch.device('cuda'))
 resnet.load_state_dict(saved_state_dict)
 resnet.cuda(0)
 resnet.eval()

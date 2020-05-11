@@ -75,13 +75,13 @@ from object_detection.utils import visualization_utils as vis_util
 
 # What model to download.
 ###
-MODEL_NAME = '/object-detection/src/tfobjdetect/checkpoints/faster_rcnn_nas_coco'
+MODEL_NAME = os.environ['MODELS'] + '/faster_rcnn_nas_coco'
 
 # Path to frozen detection graph. This is the actual model that is used for the object detection.
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join('/object-detection/src/tfobjdetect/lib/object_detection/data', 'mscoco_label_map.pbtxt')
+PATH_TO_LABELS = os.path.join('../lib/object_detection/data', 'mscoco_label_map.pbtxt')
 
 NUM_CLASSES = 90
 
