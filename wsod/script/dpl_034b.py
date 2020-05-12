@@ -82,7 +82,7 @@ for i, l in enumerate(all_labels):
 # In[7]:
 
 
-with open('../../test/kf_id2path.pkl', 'rb') as fin:
+with open('../../model_fusion/temp/kf_id2path.pkl', 'rb') as fin:
     kf_id_to_img_path = pickle.load(fin)
 
 

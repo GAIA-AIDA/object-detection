@@ -124,7 +124,7 @@ def load_image_into_numpy_array(image):
 # In[10]:
 
 
-with open('../../test/kf_id2path.pkl', 'rb') as fin:
+with open('../../model_fusion/temp/kf_id2path.pkl', 'rb') as fin:
     kf_id_to_img_path = pickle.load(fin)
 
 

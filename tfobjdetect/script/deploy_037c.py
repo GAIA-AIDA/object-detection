@@ -144,7 +144,7 @@ good_to_bad_vid_id = {}
 bad_to_good_kf_id = {}
 good_to_bad_kf_id = {}
 
-with open('../../test/masterShotBoundary.msb', 'r') as fin:
+with open(os.environ['CORPUS'] + '/docs/masterShotBoundary.msb', 'r') as fin:
     for line in fin:
         row = line.split()
 
@@ -174,7 +174,7 @@ for i, item in enumerate(test_img_path):
 # In[15]:
 
 
-with open('../../test/kf_id2path.pkl', 'wb') as fout:
+with open('../../model_fusion/temp/kf_id2path.pkl', 'wb') as fout:
     pickle.dump(kf_id_to_img_path, fout)
 
 

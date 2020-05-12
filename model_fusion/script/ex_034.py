@@ -27,7 +27,7 @@ score_threshold = 0.0
 # In[3]:
 
 
-sys.path.append("/home/alireza/aida/tools/AIDA-Interchange-Format/python")
+sys.path.append("/root/src/lib/AIDA-Interchange-Format/python")
 from aida_interchange.Bounding_Box import Bounding_Box
 import aida_interchange.aifutils as aifutils
 
@@ -146,7 +146,7 @@ with open('../temp/imgsize_m18_kf.pkl', 'rb') as fin:
 
 root_to_leaf = {}
 flag = False
-with open('../../test/parent_children.sorted.tab', 'r') as fin:
+with open(os.environ['CORPUS'] + '/doc/parent_children.sorted.tab', 'r') as fin:
     for line in fin:
         if not flag:
             flag = True
