@@ -80,7 +80,7 @@ MODEL_NAME = MODEL_NAME = os.environ['MODELS'] + '/faster_rcnn_nas_coco'
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join('/object-detection/src/tfobjdetect/lib/object_detection/data', 'mscoco_label_map.pbtxt')
+PATH_TO_LABELS = os.path.join('../lib/object_detection/data', 'mscoco_label_map.pbtxt')
 
 NUM_CLASSES = 90
 
