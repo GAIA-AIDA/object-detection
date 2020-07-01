@@ -26,6 +26,11 @@ RUN ./bin/protoc object_detection/protos/*.proto --python_out=.
 
 RUN apt-get install nano tree
 
+RUN mkdir /root/models
+WORKDIR /root/models
+RUN wget -O models.zip https://www.dropbox.com/sh/gn67jiie5luyvxe/AACJVYGciC8hrHP7j6gUOu_Ya?dl=1
+RUN unzip models.zip -x /
+
 WORKDIR /root/src/
 COPY requirements.txt ./
 RUN pip3.6 install -r requirements.txt
