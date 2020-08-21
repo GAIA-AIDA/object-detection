@@ -146,15 +146,15 @@ with open('../temp/imgsize_m18_kf.pkl', 'rb') as fin:
 
 root_to_leaf = {}
 flag = False
-with open(os.environ['CORPUS'] + '/docs/parent_children.sorted.tab', 'r', encoding="utf-8") as fin:
+with open(os.environ['CORPUS'] + '/docs/parent_children.tab', 'r', encoding="utf-8") as fin:
     for line in fin:
         if not flag:
             flag = True
             continue
         row = line.split()
-        if root_to_leaf.get(row[7]) == None:
-            root_to_leaf[row[7]] = []
-        root_to_leaf[row[7]].append(row[2])
+        if root_to_leaf.get(row[2]) == None:
+            root_to_leaf[row[2]] = []
+        root_to_leaf[row[2]].append(row[3])
 
 # In[16]:
 
