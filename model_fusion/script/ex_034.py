@@ -28,97 +28,16 @@ score_threshold = 0.0
 
 
 sys.path.append("/root/src/lib/AIDA-Interchange-Format/python")
-from aida_interchange.Bounding_Box import Bounding_Box
+from aida_interchange.bounding_box import Bounding_Box
 import aida_interchange.aifutils as aifutils
+from aida_interchange.rdf_ontologies import ldc_ontology_m36, interchange_ontology
 
 
 # In[4]:
 
 
-with open('../../wsod/metadata/ont_m18/mapping2.pkl', 'rb') as fin:
+with open('../../wsod/metadata/ont_m36/mapping.pkl', 'rb') as fin:
     mid2ont, syn2mid, single_mids, mid2syn, class2ont, ont2name, class_names = pickle.load(fin)  
-
-
-# In[5]:
-
-
-ldc_entity_types = []
-with open('../../wsod/metadata/ont_m18/ldc_entity_types.txt', 'r') as fin:
-    for line in fin:
-        ldc_entity_types.append(line.strip())
-
-
-# In[6]:
-
-
-len(ldc_entity_types)
-
-
-# In[7]:
-
-
-ldc_event_types = []
-with open('../../wsod/metadata/ont_m18/ldc_event_types.txt', 'r') as fin:
-    for line in fin:
-        ldc_event_types.append(line.strip())
-
-
-# In[8]:
-
-
-len(ldc_event_types)
-
-
-# In[9]:
-
-
-short_to_long_map = {
-    'BAL': 'Ballot',
-    'COM': 'Commodity',
-    'CRM': 'Crime',
-    'FAC': 'Facility',
-    'GPE': 'GeopoliticalEntity',
-    'LAW': 'Law',
-    'LOC': 'Location',
-    'MON': 'Money',
-    'ORG': 'Organization',
-    'PER': 'Person',
-    'RES': 'Result',
-    'SID': 'Sides',
-    'TTL': 'Title',
-    'VAL': 'Value',
-    'VEH': 'Vehicle',
-    'WEA': 'Weapon',
-}
-long_to_short_map = {v: k for k, v in short_to_long_map.items()}
-
-
-# In[10]:
-
-
-allowed_to_have_name = ['PER', 'ORG', 'GPE', 'FAC', 'LOC', 'WEA', 'VEH', 'LAW']
-
-
-# In[11]:
-
-
-ldc_entity_types_new = []
-for t in ldc_entity_types:
-    sp = t.split('.')
-    if sp[0] not in long_to_short_map:
-        print(t)
-    else:
-        sp[0] = long_to_short_map[sp[0]]
-    ldc_entity_types_new.append('.'.join(sp))
-
-
-# In[12]:
-
-
-LDC_ONTOLOGY = ClosedNamespace(
-    uri=URIRef("https://tac.nist.gov/tracks/SM-KBP/2019/ontologies/LDCOntology#"),
-    terms=ldc_entity_types_new + ldc_event_types
-)
 
 
 # In[13]:
@@ -196,9 +115,11 @@ def add_detections_to_graph(g, detections, parent_id, imgid, is_keyframe):
         for iii, ont_id in enumerate(class2ont[label]):
             ont_name = ont2name[ont_id]
 
-            labelrdf = LDC_ONTOLOGY.term(ont_name)
+            labelrdf = getattr(ldc_ontology_m36, '_'.join(ont_name.split('.')), None)
+            if labelrdf is None:
+                raise ValueError(ont_name)
 
-            if ont_name in ldc_entity_types_new:
+            if ont_id.startswith('LDC_ent_'):
 
                 eid = f"http://www.columbia.edu/AIDA/DVMM/Entities/ObjectDetection/RUN00010/{str_append}/{imgid}/{ii}"
 
@@ -221,7 +142,7 @@ def add_detections_to_graph(g, detections, parent_id, imgid, is_keyframe):
                 #if ont_name.split('.')[0] in allowed_to_have_name:
                 #    aifutils.mark_name(g, entity, class_names[label].split('(')[-1][:-1])
 
-            else:            
+            elif ont_id.startswith('LDC_evt_'):
 
                 eid = f"http://www.columbia.edu/AIDA/DVMM/Events/ObjectDetection/RUN00010/{str_append}/{imgid}/{ii}"
 
@@ -244,6 +165,9 @@ def add_detections_to_graph(g, detections, parent_id, imgid, is_keyframe):
                 #aifutils.mark_private_data(g, event, json.dumps({}), sys)
                 #aifutils.mark_name(g, event, class_names[label])
 
+            else:
+                raise NotImplementedError
+
 
 # In[17]:
 
@@ -265,6 +189,7 @@ event_dict = {}
 for root_doc in root_to_leaf:
 
     g = aifutils.make_graph()
+    g.bind('ldcOnt', ldc_ontology_m36.NAMESPACE)
 
     system_pa = aifutils.make_system_with_uri(g, "http://www.columbia.edu/AIDA/USC/Systems/ObjectDetection/FasterRCNN/PascalVOC")
     system_co = aifutils.make_system_with_uri(g, "http://www.columbia.edu/AIDA/DVMM/Systems/ObjectDetection/FasterRCNN-NASNet/COCO")

@@ -16,7 +16,7 @@ RUN pip3.6 install --upgrade pip
 RUN mkdir lib
 WORKDIR /root/src/lib
 RUN git clone --branch v1.12.0 https://github.com/tensorflow/models.git
-RUN git clone --branch tag/v1.0.3 https://github.com/NextCenturyCorporation/AIDA-Interchange-Format.git
+RUN git clone --branch v1.2.1 https://github.com/NextCenturyCorporation/AIDA-Interchange-Format.git
 ENV PYTHONPATH=/usr/local/bin/python:/root/src/lib/models/research:/root/src/lib/models/research/slim:/root/src/lib/AIDA-Interchange-Format/python:.
 
 WORKDIR /root/src/lib/models/research
