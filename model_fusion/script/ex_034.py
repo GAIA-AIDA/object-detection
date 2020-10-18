@@ -21,7 +21,7 @@ from rdflib.namespace import ClosedNamespace
 # In[2]:
 
 
-score_threshold = 0.0
+score_threshold = 0.1
 
 
 # In[3]:
@@ -93,21 +93,13 @@ def add_detections_to_graph(g, detections, parent_id, imgid, is_keyframe):
         if score < score_threshold:
             continue
 
-        if model == 'coco':
+        if model.startswith('coco'):
             sys = system_co
-        elif model == 'voc':
+        elif model.startswith('voc'):
             sys = system_pa
-        elif model == 'oi':
+        elif model.startswith('oi'):
             sys = system_oi
-        elif model == 'ws':
-            sys = system_ws
-        elif model == 'coco/J':
-            sys = system_co
-        elif model == 'voc/J':
-            sys = system_pa
-        elif model == 'oi/J':
-            sys = system_oi
-        elif model == 'ws/J':
+        elif model.startswith('ws'):
             sys = system_ws
         else:
             raise

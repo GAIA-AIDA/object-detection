@@ -32,52 +32,9 @@ with open('../../results/det_results_ws_jpg_dpl_034a.pkl', 'rb') as fin:
 # In[4]:
 
 
-with open('../../wsod/metadata/ont_m18/mapping.pkl', 'rb') as fin:
+with open('../../wsod/metadata/ont_m36/mapping.pkl', 'rb') as fin:
     mid2ont, syn2mid, single_mids, mid2syn, class2ont, ont2name, class_names = pickle.load(fin)  
 
-
-# In[5]:
-
-'''
-label_set = set()
-for imgid, det_list in det_results_oi.items():
-    for det in det_list:
-        if det['label'] in mid2syn:
-            label_set.add(det['label'])
-            det['label'] = mid2syn[det['label']]
-
-
-# In[6]:
-
-
-label_set
-
-
-# In[7]:
-
-
-label_set = set()
-for imgid, det_list in det_results_coco.items():
-    for det in det_list:
-        if det['label'] in mid2syn:
-            label_set.add(det['label'])
-            det['label'] = mid2syn[det['label']]
-
-
-# In[8]:
-
-
-label_set
-
-
-# In[9]:
-
-
-len(set(det_results_oi)), len(set(det_results_coco)), len(set(det_results_ws)), len(set(det_results_voc))
-
-'''
-
-# In[11]:
 
 
 det_results_concat = {}
@@ -85,6 +42,8 @@ for imgid in det_results_oi:
     if imgid not in det_results_concat:
         det_results_concat[imgid] = []
     for det in det_results_oi[imgid]:
+        if det['score'] < 0.1:
+            continue
         det_results_concat[imgid].append({
             'label': det['label'],
             'score': det['score'],
@@ -98,6 +57,8 @@ for imgid in det_results_coco:
         det_results_concat[imgid] = []
         print("WARNING: image in coco not in oi")
     for det in det_results_coco[imgid]:
+        if det['score'] < 0.1:
+            continue
         det_results_concat[imgid].append({
             'label': det['label'],
             'score': det['score'],
@@ -111,6 +72,8 @@ for imgid in det_results_ws:
         det_results_concat[imgid] = []
         print("WARNING: image in ws not in oi")
     for det in det_results_ws[imgid]:
+        if det['score'] < 0.1:
+            continue
         det_results_concat[imgid].append({
             'label': det['label'],
             'score': det['score'],
@@ -124,6 +87,8 @@ for imgid in det_results_voc:
         det_results_concat[imgid] = []
         print("WARNING: image in ws not in oi")
     for det in det_results_voc[imgid]:
+        if det['score'] < 0.1:
+            continue
         det_results_concat[imgid].append({
             'label': det['label'],
             'score': det['score'],
@@ -133,11 +98,6 @@ for imgid in det_results_voc:
         })
      
 
-
-# In[12]:
-
-
-len(set(det_results_concat))
 '''
 
 # In[13]:
@@ -161,27 +121,30 @@ def iou(det_bbox, gt_bbox):
     y_int_len = max(0, min(gt_bbox[3], det_bbox[3]) - max(gt_bbox[1], det_bbox[1]))
     iou = (x_int_len*y_int_len) / (x_d_len*y_d_len + x_t_len*y_t_len - x_int_len*y_int_len)
     return iou
-'''
-def ioa(det_bbox, gt_bbox):
+
+
+def iomin(det_bbox, gt_bbox):
     x_d_len = det_bbox[2] - det_bbox[0]
     y_d_len = det_bbox[3] - det_bbox[1]
     x_t_len = gt_bbox[2] - gt_bbox[0]
     y_t_len = gt_bbox[3] - gt_bbox[1]
     x_int_len = max(0, min(gt_bbox[2], det_bbox[2]) - max(gt_bbox[0], det_bbox[0]))
     y_int_len = max(0, min(gt_bbox[3], det_bbox[3]) - max(gt_bbox[1], det_bbox[1]))
-    iou = (x_int_len*y_int_len) / (x_d_len*y_d_len)
-    return iou
-'''
-
+    iom = (x_int_len*y_int_len) / min(x_d_len*y_d_len, x_t_len*y_t_len)
+    return iom
 
 # In[15]:
 
 
+mid2toplevel = {k: v.split('.')[0].split()[0] for k, v in class_names.items()}
+
 _STAT_num_same_merged = 0
 _STAT_num_diff_merged = 0
 
-thresh_same = 0.5
-thresh_diff = 0.7
+iou_thresh_exact_match = 0.5
+iou_thresh_top_level_match = 0.5
+iomin_thresh_exact_match = 0.9
+iomin_thresh_top_level_match = 0.9
 
 all_groups = {}
 for imgid, det in det_results_concat.items():
@@ -192,7 +155,9 @@ for imgid, det in det_results_concat.items():
         matching_gr = None
         for gr in groups:
             for item in gr:
-                if det[ii]['label'] == det[item]['label'] and iou(det[ii]['bbox'], det[item]['bbox']) > thresh_same:
+                if len(set(mid2ont[det[ii]['label']]) & set(mid2ont[det[item]['label']])) > 0 and \
+                (iou(det[ii]['bbox'], det[item]['bbox']) > iou_thresh_exact_match or
+                 iomin(det[ii]['bbox'], det[item]['bbox']) > iomin_thresh_exact_match):
                     if matching_gr == None:
                         gr.append(ii)
                         matching_gr = gr
@@ -201,7 +166,9 @@ for imgid, det in det_results_concat.items():
                         gr.clear()
                     _STAT_num_same_merged += 1
                     break
-                if det[ii]['label'] != det[item]['label'] and iou(det[ii]['bbox'], det[item]['bbox']) > thresh_diff:
+                elif mid2toplevel[det[ii]['label']] == mid2toplevel[det[item]['label']] and \
+                (iou(det[ii]['bbox'], det[item]['bbox']) > iou_thresh_top_level_match or
+                 iomin(det[ii]['bbox'], det[item]['bbox']) > iomin_thresh_top_level_match):
                     if matching_gr == None:
                         gr.append(ii)
                         matching_gr = gr
@@ -220,26 +187,12 @@ for imgid, det in det_results_concat.items():
 # In[16]:
 
 
-_STAT_num_same_merged, _STAT_num_diff_merged
-
-
-# In[17]:
-
-
-with open('../../wsod/metadata/ont_m18/class_names_all.pkl', 'rb') as fin:
-    mid2name_all = pickle.load(fin)
-
-
-# In[18]:
-
-
-mid2level = {mid: len(name.split(' ')[0].split('.')) for mid, name in mid2name_all.items()}
+mid2level = {mid: len(name.split(' ')[0].split('.')) for mid, name in class_names.items()}
 
 
 # In[19]:
 
 
-box_preference = {'voc': 2.0, 'coco': 2.0, 'oi': 2.0, 'ws': 1.0}
 class_preference = {'voc': 1.0, 'coco': 2.0, 'oi': 3.0, 'ws': 4.0}
 
 det_results_merged = {}
@@ -256,11 +209,11 @@ for imgid, groups in all_groups.items():
         label = det[g[imax]]['label']
         model = det[g[imax]]['model'] + suff
 
-        mod_scores = [det[i]['score'] + (10.0 * box_preference[det[i]['model']]) for i in g]
-        imax = np.argmax(mod_scores)
-        box = det[g[imax]]['bbox']
-        box_norm = det[g[imax]]['bbox_normalized']
-            
+        boxes = np.stack([det[ii]['bbox'] for ii in g], axis=0)
+        box = np.concatenate([boxes[:, :2].min(axis=0), boxes[:, 2:].max(axis=0)])
+        boxes = np.stack([det[ii]['bbox_normalized'] for ii in g], axis=0)
+        box_norm = np.concatenate([boxes[:, :2].min(axis=0), boxes[:, 2:].max(axis=0)])
+
         scores = [det[ii]['score'] for ii in g]
         score = np.max(scores)
         
@@ -276,9 +229,57 @@ for imgid, groups in all_groups.items():
         })
 
 
+all_groups = {}
+for imgid, det in det_results_merged.items():
+    groups = []
+    g_all = []
+    for t in set(mid2toplevel.values()):
+        g = [ii for ii in range(len(det)) if mid2toplevel[det[ii]['label']] == t]
+        if len(g) >= 10: 
+            groups.append(g)
+            g_all += g
+    groups += [[ii] for ii in range(len(det)) if ii not in g_all]
+    all_groups[imgid] = groups
+
+
+
+det_results_grouped = {}
+for imgid, groups in all_groups.items():
+    det_results_grouped[imgid] = []
+    det = det_results_merged[imgid]
+    for g in groups:
+        if len(g) == 0:
+            continue
+        suff = '/G' if len(g) > 1 else ''
+
+        mod_scores = [det[i]['score'] + (10.0 * class_preference[det[i]['model'].split('/')[0]]) + (100.0 * mid2level[det[i]['label']]) for i in g]
+        imax = np.argmax(mod_scores)
+        label = det[g[imax]]['label']
+        model = det[g[imax]]['model'] + suff
+
+        boxes = np.stack([det[ii]['bbox'] for ii in g], axis=0)
+        box = np.concatenate([boxes[:, :2].min(axis=0), boxes[:, 2:].max(axis=0)])
+        boxes = np.stack([det[ii]['bbox_normalized'] for ii in g], axis=0)
+        box_norm = np.concatenate([boxes[:, :2].min(axis=0), boxes[:, 2:].max(axis=0)])
+            
+        scores = [det[ii]['score'] for ii in g]
+        score = np.max(scores)
+        
+        if score < 0.01:
+            continue
+        
+        det_results_grouped[imgid].append({
+            'label': label,
+            'score': score,
+            'bbox': box,
+            'bbox_normalized': box_norm,
+            'model': model,            
+        })
+
+
 # In[20]:
 
 
 with open('../../results/det_results_merged_34a.pkl', 'wb') as fout:
-    pickle.dump(det_results_merged, fout)
+    pickle.dump(det_results_grouped, fout)
 
