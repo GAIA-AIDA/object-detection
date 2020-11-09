@@ -13,7 +13,7 @@ $ GPU_ID=[a single integer index to the GPU]
 $ chmod +x ./full_script.sh
 $ docker build . --tag [TAG]
 $ CONTAINER_ID=`docker run -itd -v ${INPUT}:/root/input:ro -v ${OUTPUT}:/root/output \
-                -e CUDA_VISIBLE_DEVICES=${GPU_ID} --gpus=${GPU_ID} --name aida-cu-od [TAG] /bin/bash`
+                -e CUDA_VISIBLE_DEVICES=${GPU_ID} --gpus=<NUMBER_OF_GPUS_ON_MACHINE> --name aida-cu-od [TAG] /bin/bash`
 $ docker exec -it ${CONTAINER_ID} /bin/bash
 
 root@7606a206e587:~/src# . ./full_script.sh 
