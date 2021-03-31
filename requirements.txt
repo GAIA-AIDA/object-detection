@@ -72,7 +72,7 @@ kiwisolver==1.0.1
 kytea==0.1.4
 langdetect==1.0.7
 lmdb==0.94
-lxml==4.2.1
+lxml==4.6.3
 Markdown==2.6.11
 matplotlib==3.1.2
 mistune==0.8.3
