@@ -25,7 +25,7 @@ contextlib2==0.6.0.post1
 cycler==0.10.0
 Cython==0.28.3
 dartsclone==0.6
-dask==0.17.5
+dask==2021.10.0
 decorator==4.3.0
 Deprecated==1.2.6
 docutils==0.14
