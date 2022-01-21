@@ -39,7 +39,7 @@ hyperopt==0.1.2
 idna==2.6
 importlib-metadata==0.18
 ipykernel==4.8.2
-ipython==6.4.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 ipywidgets==7.2.1
 jaraco.functools==2.0
