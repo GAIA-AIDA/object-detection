@@ -7,7 +7,7 @@ cycler==0.10.0
 dask==0.17.5
 decorator==4.3.0
 entrypoints==0.2.3
-html5lib==1.0.1
+html5lib==0.99999999
 ipykernel==4.8.2
 ipython==6.4.0
 ipython-genutils==0.2.0
