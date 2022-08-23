@@ -68,7 +68,7 @@ mistune==0.8.3
 more-itertools==7.1.0
 mpld3==0.3
 mysqlclient==1.4.2.post1
-nbconvert==5.3.1
+nbconvert==6.5.1
 nbformat==4.4.0
 networkx==2.3
 nltk==3.4.4
